@@ -1,4 +1,5 @@
 import { Global, Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { MongodbOptions } from './mongodb.module.options';
 import { MongodbFactory } from './mongodb.service';
 
@@ -6,7 +7,11 @@ import { MongodbFactory } from './mongodb.service';
 @Module({})
 export class MongodbModule {
   private static getProviders(options: MongodbOptions) {
-    return [{ provide: MongodbOptions, useValue: options }, MongodbFactory];
+    return [
+      { provide: MongodbOptions, useValue: options },
+      ConfigService,
+      MongodbFactory,
+    ];
   }
 
   static forRoot(options: MongodbOptions) {
