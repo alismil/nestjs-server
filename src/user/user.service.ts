@@ -7,10 +7,10 @@ export class UserService {
   }
 
   get(): string {
-    return 'here is user with id '
+    return 'here is user with id ';
   }
 
   delete(): string {
-    return 'deleted user'
+    return 'deleted user';
   }
 }
