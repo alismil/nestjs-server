@@ -1,0 +1,21 @@
+version: '3.9'
+
+services:
+  server:
+    build: .
+    # image: nestjs-server
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
+    env_file:
+      - '.env'
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+
+  mongodb:
+    image: mongo:4
+    ports:
+      - '27017-27019:27017-27019'
+    volumes:
+      - ./dist/mongodb/data:/data/db
