@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Collection } from 'mongodb';
 import { MongoClient } from '../mongodb';
+import { User } from './user.controller';
+import { v4 } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -16,19 +18,38 @@ export class UserService {
     this.users = this.client.db(database).collection(collection);
   }
 
-  async create(): Promise<string> {
-    await this.users.insertOne({
-      user: 'gkampitakis',
-    });
+  async create(user: User) {
+    const userDTO = {
+      ...user,
+      id: v4(),
+    };
+    await this.users.insertOne(userDTO);
 
-    return 'user created';
+    return userDTO;
   }
 
-  get(): string {
-    return 'here is user with id ';
+  async get(userID: string) {
+    return this.users.findOne({ id: userID });
   }
 
-  delete(): string {
-    return 'deleted user';
+  delete(userID: string) {
+    return this.users.deleteOne({ id: userID });
+  }
+
+  async update(userID: string, payload: Partial<User>) {
+    const document = await this.users.findOneAndUpdate(
+      {
+        id: userID,
+      },
+      {
+        $set: payload,
+      },
+      {
+        upsert: false,
+        returnDocument: 'after',
+      },
+    );
+
+    return document.value;
   }
 }
